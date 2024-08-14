@@ -19,21 +19,23 @@ public class Main {
      */
     public static void main(String[] args) {
         // Define portfolio optimization problem
-        val mu = new SimpleMatrix(new double[]{0.05, 0.06, 0.08, 0.06});
-        val sigma = new SimpleMatrix(4, 4, true,
-                0.0225, 0.003, 0.015, 0.0225,
-                0.003, 0.04, 0.035, 0.024,
-                0.015, 0.035, 0.0625, 0.06,
-                0.0225, 0.024, 0.06, 0.09);
-        val sigmaLimit = 0.2;
+        val mu = new SimpleMatrix(new double[]{0.05, 0.09, 0.07, 0.06});
+        val sigma = new SimpleMatrix(
+                4, 4, true,
+                0.0016, 0.0006, 0.0008, -0.0004,
+                0.0006, 0.0225, 0.0015, -0.0015,
+                0.0008, 0.0015, 0.0025, -0.001,
+                -0.0004, -0.0015, -0.001, 0.01
+        );
+        val sigmaLimit = 0.06;
 
         // Problem dimension
         val n = mu.getNumRows();
 
         // Compute Cholesky decomposition of sigma
         val chol = DecompositionFactory_DDRM.chol(n, true);
-        if (!chol.decompose(sigma.getMatrix()))
-            throw new RuntimeException("Cholesky decomposition failed");
+        if (!chol.decompose(sigma.copy().getMatrix()))
+            throw new IllegalArgumentException("Cholesky decomposition failed");
         val upTriMat = SimpleMatrix.wrap(chol.getT(null)).transpose();
 
         // Define second-order cone program
@@ -94,11 +96,12 @@ public class Main {
             // Optimize model
             val status = model.optimize();
             if (status != OPTIMAL) {
-                throw new RuntimeException("Optimization failed");
+                throw new IllegalStateException("Optimization failed");
             }
 
             // Get solution
-            val xMat = new SimpleMatrix(model.x());
+            val xMat = new SimpleMatrix(model.x())
+                    .extractMatrix(0, n, 0, 1);
             System.out.println("xMat");
             xMat.print();
         }
