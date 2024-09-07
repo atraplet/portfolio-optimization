@@ -83,9 +83,9 @@ public class Main {
         try (val model = new Model()) {
 
             // Set up model
-            model.setup(n + 1, new long[]{n + 1}, 0, gSpMat.nz_values, toLongArray(gSpMat.col_idx),
-                    toLongArray(gSpMat.nz_rows), cMat.getDDRM().data, hMat.getDDRM().data, aSpMat.nz_values,
-                    toLongArray(aSpMat.col_idx), toLongArray(aSpMat.nz_rows), bMat.getDDRM().data);
+            model.setup(n + 1, new long[]{n + 1}, 0, getNzValues(gSpMat), getColIdx(gSpMat),
+                    getNzRows(gSpMat), cMat.getDDRM().data, hMat.getDDRM().data, getNzValues(aSpMat),
+                    getColIdx(aSpMat), getNzRows(aSpMat), bMat.getDDRM().data);
 
             // Create and set parameters
             val parameters = Parameters.builder()
@@ -105,6 +105,28 @@ public class Main {
             System.out.println("xMat");
             xMat.print();
         }
+    }
+
+    private static double[] getNzValues(DMatrixSparseCSC matrix) {
+        if (!matrix.isIndicesSorted()) matrix.sortIndices(null);
+        if (matrix.nz_values.length == matrix.nz_length) {
+            return matrix.nz_values;
+        } else {
+            return Arrays.copyOfRange(matrix.nz_values, 0, matrix.nz_length);
+        }
+    }
+
+    private static long[] getNzRows(DMatrixSparseCSC matrix) {
+        if (!matrix.isIndicesSorted()) matrix.sortIndices(null);
+        if (matrix.nz_rows.length == matrix.nz_length) {
+            return toLongArray(matrix.nz_rows);
+        } else {
+            return toLongArray(Arrays.copyOfRange(matrix.nz_rows, 0, matrix.nz_length));
+        }
+    }
+
+    private static long[] getColIdx(DMatrixSparseCSC matrix) {
+        return toLongArray(matrix.col_idx);
     }
 
     private static long[] toLongArray(int[] arr) {
