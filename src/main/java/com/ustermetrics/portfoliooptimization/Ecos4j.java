@@ -82,16 +82,16 @@ public class Ecos4j {
         // Create model
         try (val model = new Model()) {
 
-            // Set up model
-            model.setup(n, new long[]{n}, 0, getNzValues(gSpMat), getColIdx(gSpMat), getNzRows(gSpMat),
-                    cMat.getDDRM().data, hMat.getDDRM().data, getNzValues(aSpMat), getColIdx(aSpMat),
-                    getNzRows(aSpMat), bMat.getDDRM().data);
-
             // Create and set parameters
             val parameters = Parameters.builder()
                     .verbose(true)
                     .build();
             model.setParameters(parameters);
+
+            // Set up model
+            model.setup(n, new long[]{n}, 0, getNzValues(gSpMat), getColIdx(gSpMat), getNzRows(gSpMat),
+                    cMat.getDDRM().data, hMat.getDDRM().data, getNzValues(aSpMat), getColIdx(aSpMat),
+                    getNzRows(aSpMat), bMat.getDDRM().data);
 
             // Optimize model
             val status = model.optimize();
