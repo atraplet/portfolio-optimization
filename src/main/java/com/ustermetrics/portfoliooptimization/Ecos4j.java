@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 import static com.ustermetrics.ecos4j.Status.OPTIMAL;
 
-public class Main {
+public class Ecos4j {
 
     /**
      * Solve a Markowitz portfolio optimization problem with <a href="https://github.com/atraplet/ecos4j">ecos4j</a>.
