@@ -30,10 +30,10 @@ public class Ecos4j {
         val sigmaLimit = 0.06;
 
         // Problem dimension
-        val n = mu.getNumRows();
+        val n = mu.getNumRows() + 1;
 
         // Compute Cholesky decomposition of sigma
-        val chol = DecompositionFactory_DDRM.chol(n, true);
+        val chol = DecompositionFactory_DDRM.chol(n - 1, true);
         if (!chol.decompose(sigma.copy().getMatrix()))
             throw new IllegalArgumentException("Cholesky decomposition failed");
         val upTriMat = SimpleMatrix.wrap(chol.getT(null)).transpose();
@@ -44,7 +44,7 @@ public class Ecos4j {
         System.out.println("\ncMat");
         cMat.print();
 
-        val aMat = SimpleMatrix.ones(1, n)
+        val aMat = SimpleMatrix.ones(1, n - 1)
                 .concatColumns(new SimpleMatrix(1, 1));
         System.out.println("\naMat");
         aMat.print();
@@ -53,19 +53,19 @@ public class Ecos4j {
         System.out.println("\nbMat");
         bMat.print();
 
-        val gMatPosOrt = SimpleMatrix.identity(n)
+        val gMatPosOrt = SimpleMatrix.identity(n - 1)
                 .negative()
-                .concatColumns(new SimpleMatrix(n, 1))
-                .concatRows(new SimpleMatrix(1, n).concatColumns(SimpleMatrix.ones(1, 1)));
-        val gMatSoc = new SimpleMatrix(1, n)
+                .concatColumns(new SimpleMatrix(n - 1, 1))
+                .concatRows(new SimpleMatrix(1, n - 1).concatColumns(SimpleMatrix.ones(1, 1)));
+        val gMatSoc = new SimpleMatrix(1, n - 1)
                 .concatColumns(SimpleMatrix.filled(1, 1, -1.0))
-                .concatRows(upTriMat.negative().concatColumns(new SimpleMatrix(n, 1)));
+                .concatRows(upTriMat.negative().concatColumns(new SimpleMatrix(n - 1, 1)));
         val gMat = gMatPosOrt.concatRows(gMatSoc);
         System.out.println("\ngMat");
         gMat.print();
 
-        val hMat = new SimpleMatrix(2 * n + 2, 1);
-        hMat.set(n, 0, sigmaLimit);
+        val hMat = new SimpleMatrix(2 * (n - 1) + 2, 1);
+        hMat.set(n - 1, 0, sigmaLimit);
         System.out.println("\nhMat");
         hMat.print();
 
@@ -83,9 +83,9 @@ public class Ecos4j {
         try (val model = new Model()) {
 
             // Set up model
-            model.setup(n + 1, new long[]{n + 1}, 0, getNzValues(gSpMat), getColIdx(gSpMat),
-                    getNzRows(gSpMat), cMat.getDDRM().data, hMat.getDDRM().data, getNzValues(aSpMat),
-                    getColIdx(aSpMat), getNzRows(aSpMat), bMat.getDDRM().data);
+            model.setup(n, new long[]{n}, 0, getNzValues(gSpMat), getColIdx(gSpMat), getNzRows(gSpMat),
+                    cMat.getDDRM().data, hMat.getDDRM().data, getNzValues(aSpMat), getColIdx(aSpMat),
+                    getNzRows(aSpMat), bMat.getDDRM().data);
 
             // Create and set parameters
             val parameters = Parameters.builder()
@@ -101,7 +101,7 @@ public class Ecos4j {
 
             // Get solution
             val xMat = new SimpleMatrix(model.x())
-                    .extractMatrix(0, n, 0, 1);
+                    .extractMatrix(0, n - 1, 0, 1);
             System.out.println("xMat");
             xMat.print();
         }
