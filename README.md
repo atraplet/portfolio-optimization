@@ -1,7 +1,7 @@
 # Portfolio Optimization
 
 Solve a [Markowitz portfolio optimization problem](https://en.wikipedia.org/wiki/Modern_portfolio_theory)
-with [ecos4j](https://github.com/atraplet/ecos4j) and [clarabel4j](https://github.com/atraplet/clarabel4j).
+with [clarabel4j](https://github.com/atraplet/clarabel4j).
 
 A long-only investor wishes to maximize the expected portfolio return given a limit on the portfolio risk
 
