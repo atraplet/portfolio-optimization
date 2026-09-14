@@ -19,12 +19,12 @@
         <dependency>
             <groupId>com.ustermetrics</groupId>
             <artifactId>clarabel4j</artifactId>
-            <version>3.0.0</version>
+            <version>3.2.2</version>
         </dependency>
         <dependency>
             <groupId>org.ejml</groupId>
             <artifactId>ejml-all</artifactId>
-            <version>0.44.0</version>
+            <version>0.46.1</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -34,13 +34,13 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.42</version>
+            <version>1.18.48</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.ustermetrics</groupId>
             <artifactId>clarabel4j-native</artifactId>
-            <version>4.0.0-0.11.1</version>
+            <version>4.0.1-0.11.1</version>
             <scope>runtime</scope>
         </dependency>
     </dependencies>
